@@ -1,5 +1,4 @@
-import {BrowserWindow, ipcMain, IpcMainInvokeEvent} from "electron";
-import {NAVIGATION_CLOSE} from "../constants/channelConstant";
+import {BrowserWindow,IpcMainInvokeEvent} from "electron";
 
 export function NavigationClose(win: BrowserWindow) {
     return (event: IpcMainInvokeEvent) => {

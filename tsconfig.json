@@ -30,6 +30,7 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "node_modules/@vue/reactivity/dist/reactivity.d.ts"
   ]
 }

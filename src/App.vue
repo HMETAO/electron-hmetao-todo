@@ -1,5 +1,5 @@
 <template>
-  <div class="common-layout">
+  <div class="app-container">
     <div class="navigation">
       <Navigation></Navigation>
     </div>
@@ -13,17 +13,17 @@
 import Navigation from "@/components/Navigation.vue";
 </script>
 <style scoped lang="less">
-@DefaultColor: #76bbd7;
 
-.common-layout {
+.app-container {
   display: flex;
   height: 100vh;
   flex: 1;
   flex-direction: column;
   background-color: var(--main-bg-color);
-
+  color: var(--main-text-color);
   .main {
-    flex: 1
+    flex: auto;
+    height: 0;
   }
 }
 

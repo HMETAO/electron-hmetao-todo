@@ -5,10 +5,14 @@ body, html {
 }
 
 :root {
-    --main-bg-color: #23262b
+    --main-bg-color: #23262b;
+    --main-text-color: #f4f4f4;
 }
 
-
+html.dark {
+    /* 自定义深色背景颜色 */
+    --el-bg-color: #23262b;
+}
 #app {
     height: 100%;
 }

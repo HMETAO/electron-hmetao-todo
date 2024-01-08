@@ -3,7 +3,7 @@
     <div class="navigation-box">
       <div style="flex-grow: 1;-webkit-app-region: drag;"></div>
       <div>
-        <el-button-group size="small">
+        <el-button-group >
           <el-button icon="Minus" color="rgba(0, 0, 0, 0)" @click="clickMinimizeEventFunction"></el-button>
           <el-button icon="Close" color="rgba(0, 0, 0, 0)" @click="clickCloseEventFunction"></el-button>
         </el-button-group>
@@ -12,9 +12,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../../electron/constants/channelConstant";
 
 // 点击关闭nav事件回调
+import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "@/constant/channel";
+
 const clickCloseEventFunction = () => {
   window.ipcRenderer.invoke(NAVIGATION_CLOSE)
 }
@@ -29,10 +30,10 @@ const clickMinimizeEventFunction = () => {
 <style scoped lang="less">
 .navigation-container {
   display: flex;
-  height: 24px;
+  height: 32px;
   width: 100%;
   align-items: center;
-
+border-bottom: 1px solid var(--el-menu-border-color);
   .navigation-box {
     flex: 1;
     display: flex;

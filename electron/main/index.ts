@@ -3,7 +3,7 @@ import {buildSystemTrayMenu} from '../components/menus'
 import {release} from 'node:os'
 import {join, dirname} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channelConstant";
+import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channel";
 import {NavigationClose, NavigationMinimize} from "../handler/navigation";
 
 const __filename = fileURLToPath(import.meta.url)
@@ -76,6 +76,7 @@ async function createWindow() {
 
 
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
+        win.webContents.openDevTools()
         win.loadURL(url)
     } else {
         win.loadFile(indexHtml)
@@ -91,7 +92,6 @@ async function createWindow() {
         if (url.startsWith('https:')) shell.openExternal(url)
         return {action: 'deny'}
     })
-    // win.webContents.on('will-navigate', (event, url) => { }) #344
     createWindowPostProcess(win)
 }
 

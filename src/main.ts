@@ -1,4 +1,5 @@
 import {createApp} from 'vue'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import './assets/css/globel.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
