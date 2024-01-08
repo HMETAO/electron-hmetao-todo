@@ -1,0 +1,61 @@
+@import "reset.css";
+
+body, html {
+    height: 100%;
+}
+
+:root {
+    --main-bg-color: #23262b
+}
+
+
+#app {
+    height: 100%;
+}
+
+::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 4px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+
+::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(97, 184, 179, 0.1);
+    background: #76bbd7;
+}
+
+::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    box-shadow: inset 0 0 5px rgba(87, 175, 187, 0.1);
+    border-radius: 10px;
+    background: #ededed;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.icon-font-size-b {
+    font-size: 30px;
+}
+
+
+.icon-font-size-m {
+    font-size: 25px;
+}
+
+.user-info-text {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.modal-box {
+    position: unset !important;
+}
