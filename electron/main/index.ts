@@ -3,8 +3,9 @@ import {buildSystemTrayMenu} from '../components/menus'
 import {release} from 'node:os'
 import {join, dirname} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channel";
+import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE, TODO_TIME_FINISH} from "../constants/channel";
 import {NavigationClose, NavigationMinimize} from "../handler/navigation";
+import {TodoTimeFinish} from "../handler/todo";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -58,6 +59,8 @@ const createWindowPostProcess = (win: BrowserWindow) => {
     ipcMain.handle(NAVIGATION_CLOSE, NavigationClose(win))
     // 点击最小化
     ipcMain.handle(NAVIGATION_MINIMIZE, NavigationMinimize(win))
+
+    // ipcMain.handle(TODO_TIME_FINISH, TodoTimeFinish(win))
 }
 
 async function createWindow() {

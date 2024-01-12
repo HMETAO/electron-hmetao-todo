@@ -3,19 +3,20 @@
     <el-menu
         class="layout-aside-menus-container"
         :collapse="isCollapse"
-        default-active="1"
+        default-active="/todo"
+        router
     >
-      <el-menu-item index="1" @click="()=>isCollapse = !isCollapse">
+      <el-menu-item @click="()=>isCollapse = !isCollapse">
         <el-icon>
           <icon-menu/>
         </el-icon>
-        <template #title>缩放</template>
+        <template #title>Collapse</template>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="/todo">
         <el-icon>
-          <setting/>
+          <EditPen/>
         </el-icon>
-        <template #title>Navigator Four</template>
+        <template #title>Todo</template>
       </el-menu-item>
     </el-menu>
   </div>
@@ -24,7 +25,6 @@
 <script setup lang="ts">
 import {
   Menu as IconMenu,
-  Setting,
 } from '@element-plus/icons-vue'
 import {ref} from "vue";
 

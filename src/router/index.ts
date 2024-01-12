@@ -9,17 +9,15 @@ const routes: Array<RouteRecordRaw> = [
     {
         name: "Home",
         path: "/home",
-        component: () => import("@/views/Home.vue")
-        // children: [
-        //     {
-        //         path: "",
-        //         component: () => import("../views/home.vue")
-        //     },
-        //     {
-        //         path: "about",
-        //         component: () => import("../views/about.vue")
-        //     }
-        // ]
+        redirect: "/todo",
+        component: () => import("@/views/Home.vue"),
+        children: [
+            {
+                name: "Todo",
+                path: "/todo",
+                component: () => import("@/components/todo/Todo.vue")
+            }
+        ]
     }
 ]
 const router: Router = createRouter({

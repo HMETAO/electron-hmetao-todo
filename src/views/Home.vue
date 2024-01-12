@@ -21,6 +21,12 @@
   .home-main {
     padding: 20px;
     flex: 1;
+    //background-color: var(--main-bg-home-color);
+
+    .home-card {
+      height: 100%;
+    }
+
   }
 }
 </style>

@@ -3,7 +3,7 @@
     <div class="navigation-box">
       <div style="flex-grow: 1;-webkit-app-region: drag;"></div>
       <div>
-        <el-button-group >
+        <el-button-group>
           <el-button icon="Minus" color="rgba(0, 0, 0, 0)" @click="clickMinimizeEventFunction"></el-button>
           <el-button icon="Close" color="rgba(0, 0, 0, 0)" @click="clickCloseEventFunction"></el-button>
         </el-button-group>
@@ -33,10 +33,16 @@ const clickMinimizeEventFunction = () => {
   height: 32px;
   width: 100%;
   align-items: center;
-border-bottom: 1px solid var(--el-menu-border-color);
+  border-bottom: 1px solid var(--el-menu-border-color);
+
   .navigation-box {
     flex: 1;
     display: flex;
   }
+
+  .el-button {
+    color: var(--main-text-color);
+  }
+
 }
 </style>

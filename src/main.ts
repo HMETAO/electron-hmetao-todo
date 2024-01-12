@@ -6,6 +6,8 @@ import App from './App.vue'
 import mitt from 'mitt'
 import pinia from "@/pinia";
 import router from "./router";
+// import { Temporal, Intl, toTemporalInstant } from '@js-temporal/polyfill';
+// Date.prototype.toTemporalInstant = toTemporalInstant;
 
 const app = createApp(App)
 
