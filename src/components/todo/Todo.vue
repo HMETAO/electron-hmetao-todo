@@ -53,7 +53,7 @@
           <el-progress type="circle" :percentage="20" status="success"/>
         </el-col>
       </el-row>
-      <el-row style="margin-top: 10px;border-top: 1px solid var(--el-menu-border-color)">
+      <el-row class="todo-time-box">
         <el-col :span="24" class="todo-time">
           <p>番茄时钟</p>
           <p v-if="!timeSelect.isStart" class="todo-time-select">
@@ -77,6 +77,9 @@
             </el-button>
           </p>
         </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24"></el-col>
       </el-row>
     </div>
   </div>
@@ -136,6 +139,10 @@ const endEarlyClickEventFunction = () => {
 }
 </script>
 <style scoped lang="less">
+.el-row:nth-child(n + 2) {
+  margin-top: 10px;
+  border-top: 1px solid var(--el-menu-border-color)
+}
 
 .todo-container {
   height: 100%;
@@ -161,22 +168,29 @@ const endEarlyClickEventFunction = () => {
       justify-content: center;
     }
 
-    .todo-time {
+    .todo-time-box {
+      height: 130px;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
 
-      p {
-        margin-top: 10px;
-      }
-
-      .todo-time-select {
+      .todo-time {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        p {
+          margin-top: 10px;
+        }
+
+        .todo-time-select {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
       }
     }
+
 
   }
 
