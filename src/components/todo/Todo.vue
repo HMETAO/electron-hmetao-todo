@@ -60,9 +60,9 @@
             <el-time-select
                 v-model="timeSelect.selectVal"
                 placeholder="Start time"
-                :start="timeSelect.startTime"
+                :start='Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})'
                 step="00:15"
-                end="24:00"
+                end="23:59"
             />
             <el-button type="success" @click="timeClickEventFunction" text bg>确定</el-button>
           </p>
@@ -73,6 +73,8 @@
                 format="HH:mm:ss"
                 :value="timeSelect.timeValue"
             />
+            <el-button text bg type="warning" style="margin-top: 10px" @click="endEarlyClickEventFunction">提前结束
+            </el-button>
           </p>
         </el-col>
       </el-row>
@@ -110,11 +112,9 @@ type TimeSelect = {
   isStart: boolean,
   selectVal?: string,
   timeValue?: number,
-  startTime: string
 }
 const timeSelect = ref<TimeSelect>({
   isStart: false,
-  startTime: Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})
 });
 
 // 点击确定时间事件回调
@@ -127,6 +127,11 @@ const timeClickEventFunction = () => {
 // 倒计时结束事件回调
 const finishEventFunction = () => {
   new window.Notification("时间到啦！！！", {body: `到达预定时间${timeSelect.value.selectVal}`})
+  timeSelect.value.isStart = false
+}
+
+// 点击提前结束事件回调
+const endEarlyClickEventFunction = () => {
   timeSelect.value.isStart = false
 }
 </script>
