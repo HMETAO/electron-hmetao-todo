@@ -39,7 +39,7 @@
     </div>
     <div class="todo-right">
       <el-row>
-        <el-col :span="12">
+        <el-col :span="12" style="display: flex;align-items: center">
           <el-statistic :value="138">
             <template #title>
               <div style="display: inline-flex; align-items: center">
@@ -113,7 +113,7 @@ type TimeSelect = {
   startTime: string
 }
 const timeSelect = ref<TimeSelect>({
-  isStart: true,
+  isStart: false,
   startTime: Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})
 });
 
@@ -127,13 +127,11 @@ const timeClickEventFunction = () => {
 // 倒计时结束事件回调
 const finishEventFunction = () => {
   new window.Notification("时间到啦！！！", {body: `到达预定时间${timeSelect.value.selectVal}`})
-      .onclick = () => {
-    timeSelect.value.isStart = false
-    console.log(timeSelect.value)
-  }
+  timeSelect.value.isStart = false
 }
 </script>
 <style scoped lang="less">
+
 .todo-container {
   height: 100%;
   display: flex;
