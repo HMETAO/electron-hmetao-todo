@@ -1,11 +1,11 @@
 <template>
   <div class="todo-container">
     <div class="todo-list">
-      <el-card shadow="never">
+      <el-card shadow="never" v-for="item in todoList.data " :key="item">
         <template #header>
-          <span>2024-01-09</span>
+          <span>{{ item.date }}</span>
         </template>
-        <el-table :data="todoList" :show-header="false" style="width: 100%;">
+        <el-table :data="item.list" :show-header="false" style="width: 100%;">
           <el-table-column type="expand" align="center">
             <template #default="{ row }">
               <el-descriptions title="详细信息" column="1">
@@ -40,17 +40,17 @@
     <div class="todo-right">
       <el-row>
         <el-col :span="12" style="display: flex;align-items: center">
-          <el-statistic :value="138">
+          <el-statistic :value="todoList.complete">
             <template #title>
               <div style="display: inline-flex; align-items: center">
                 总任务完成
               </div>
             </template>
-            <template #suffix>/100</template>
+            <template #suffix>/ {{ todoList.total }}</template>
           </el-statistic>
         </el-col>
         <el-col :span="12">
-          <el-progress type="circle" :percentage="20" status="success"/>
+          <el-progress  type="dashboard" :percentage="progressComputed" :color="progressColors"/>
         </el-col>
       </el-row>
       <el-row class="todo-time-box">
@@ -79,38 +79,51 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="24"></el-col>
+        <el-col :span="24">
+          <!--          <el-form >-->
+          <!--            <el-form-item label="任务名称">-->
+          <!--              <el-input placeholder="请输入任务名称"></el-input>-->
+          <!--            </el-form-item>-->
+          <!--            <el-form-item label="任务描述">-->
+          <!--              <el-input type="textarea" placeholder="请输入任务描述"></el-input>-->
+          <!--            </el-form-item>-->
+          <!--            <el-form-item label="任务时间">-->
+          <!--              <el-time-picker-->
+          <!--                  v-model="timeSelect.selectVal"-->
+          <!--                  placeholder="选择时间"-->
+          <!--                  :start='Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})'-->
+          <!--                  :end="timeSelect.selectVal"-->
+          <!--                  :disabled="timeSelect.isStart"-->
+          <!--                  :editable="false"-->
+          <!--              >-->
+          <!--              </el-time-picker>-->
+          <!--            </el-form-item>-->
+          <!--            <el-form-item label="任务开始">-->
+          <!--              <el-button type="success" bg text>开始</el-button>-->
+          <!--            </el-form-item>-->
+          <!--          </el-form>-->
+        </el-col>
       </el-row>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from "vue";
-import {TodoType} from "@/type/todo";
+import {computed, onMounted, ref} from "vue";
+import {Todo} from "@/type/todo";
 import {Temporal} from "@js-temporal/polyfill";
+import {GET_TODO} from "@/constant/channel";
 
 const colors = ['#fc5c65', '#33d9b2', '#ff793f']
-const todoList = ref<TodoType[]>([
-  {
-    id: 1,
-    isComplete: false,
-    title: '吃饭 睡觉 打豆豆',
-    endTime: "2024-01-09"
-  },
-  {
-    id: 2,
-    isComplete: true,
-    title: '爱玩',
-    endTime: "2024-01-09"
-  },
-  {
-    id: 3,
-    isComplete: true,
-    title: '爱谁',
-    endTime: "2024-01-09"
-  }
-])
 
+const progressColors = [
+  { color: '#f56c6c', percentage: 20 },
+  { color: '#e6a23c', percentage: 40 },
+  { color: '#5cb87a', percentage: 60 },
+  { color: '#1989fa', percentage: 80 },
+  { color: '#6f7ad3', percentage: 100 },
+]
+
+const todoList = ref<{ total: number, complete: number, data?: Todo[] }>({total: 1, complete: 0})
 type TimeSelect = {
   isStart: boolean,
   selectVal?: string,
@@ -119,6 +132,10 @@ type TimeSelect = {
 const timeSelect = ref<TimeSelect>({
   isStart: false,
 });
+
+const progressComputed = computed(() => {
+  return (todoList.value.complete) / (todoList.value.total) * 100;
+})
 
 // 点击确定时间事件回调
 const timeClickEventFunction = () => {
@@ -137,6 +154,11 @@ const finishEventFunction = () => {
 const endEarlyClickEventFunction = () => {
   timeSelect.value.isStart = false
 }
+
+onMounted(async () => {
+  todoList.value = await window.ipcRenderer.invoke(GET_TODO)
+})
+
 </script>
 <style scoped lang="less">
 .el-row:nth-child(n + 2) {

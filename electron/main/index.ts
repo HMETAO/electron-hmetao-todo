@@ -3,10 +3,19 @@ import {buildSystemTrayMenu} from '../components/menus'
 import {release} from 'node:os'
 import {join, dirname} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {NAVIGATION_CLOSE, NAVIGATION_MINIMIZE, TODO_TIME_FINISH} from "../constants/channel";
+import {GET_TODO, NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channel";
 import {NavigationClose, NavigationMinimize} from "../handler/navigation";
-import {TodoTimeFinish} from "../handler/todo";
+import {getTodoList} from "../handler/todo";
 
+import Store from "electron-store";
+
+let option = {
+    name: "config",//文件名称,默认 config
+    fileExtension: "json",//文件后缀,默认json
+    cwd: app.getPath('userData'),//文件位置,尽量不要动，默认情况下，它将通过遵循系统约定来选择最佳位置。C:\Users\xxx\AppData\Roaming\my-electron\config.json
+    clearInvalidConfig: true, // 发生 SyntaxError  则清空配置,
+}
+const store = new Store(option);
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -59,8 +68,8 @@ const createWindowPostProcess = (win: BrowserWindow) => {
     ipcMain.handle(NAVIGATION_CLOSE, NavigationClose(win))
     // 点击最小化
     ipcMain.handle(NAVIGATION_MINIMIZE, NavigationMinimize(win))
-
-    // ipcMain.handle(TODO_TIME_FINISH, TodoTimeFinish(win))
+    // 获取todo列表
+    ipcMain.handle(GET_TODO, getTodoList(win, store))
 }
 
 async function createWindow() {
