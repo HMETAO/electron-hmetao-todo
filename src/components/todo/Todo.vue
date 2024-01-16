@@ -8,7 +8,7 @@
         <el-table :data="item.list" :show-header="false" style="width: 100%;">
           <el-table-column type="expand" align="center">
             <template #default="{ row }">
-              <el-descriptions title="详细信息" column="1">
+              <el-descriptions title="详细信息" :column="1">
                 <el-descriptions-item label="Title">{{ row.title }}</el-descriptions-item>
                 <el-descriptions-item label="Description">{{ row.description }}</el-descriptions-item>
                 <el-descriptions-item label="EndTime">
@@ -50,7 +50,7 @@
           </el-statistic>
         </el-col>
         <el-col :span="12">
-          <el-progress  type="dashboard" :percentage="progressComputed" :color="progressColors"/>
+          <el-progress type="dashboard" :percentage="progressComputed" :color="progressColors"/>
         </el-col>
       </el-row>
       <el-row class="todo-time-box">
@@ -78,30 +78,30 @@
           </p>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <!--          <el-form >-->
-          <!--            <el-form-item label="任务名称">-->
-          <!--              <el-input placeholder="请输入任务名称"></el-input>-->
-          <!--            </el-form-item>-->
-          <!--            <el-form-item label="任务描述">-->
-          <!--              <el-input type="textarea" placeholder="请输入任务描述"></el-input>-->
-          <!--            </el-form-item>-->
-          <!--            <el-form-item label="任务时间">-->
-          <!--              <el-time-picker-->
-          <!--                  v-model="timeSelect.selectVal"-->
-          <!--                  placeholder="选择时间"-->
-          <!--                  :start='Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})'-->
-          <!--                  :end="timeSelect.selectVal"-->
-          <!--                  :disabled="timeSelect.isStart"-->
-          <!--                  :editable="false"-->
-          <!--              >-->
-          <!--              </el-time-picker>-->
-          <!--            </el-form-item>-->
-          <!--            <el-form-item label="任务开始">-->
-          <!--              <el-button type="success" bg text>开始</el-button>-->
-          <!--            </el-form-item>-->
-          <!--          </el-form>-->
+      <el-row style="flex: 1;">
+        <el-col :span="24" class="insert-box">
+          <el-form>
+            <el-form-item label="任务名称">
+              <el-input placeholder="请输入任务名称"></el-input>
+            </el-form-item>
+            <el-form-item label="任务描述">
+              <el-input type="textarea" placeholder="请输入任务描述"></el-input>
+            </el-form-item>
+            <el-form-item label="任务时间">
+              <el-time-picker
+                  v-model="timeSelect.selectVal"
+                  placeholder="选择时间"
+                  :start='Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})'
+                  :end="timeSelect.selectVal"
+                  :disabled="timeSelect.isStart"
+                  :editable="false"
+              >
+              </el-time-picker>
+            </el-form-item>
+            <el-form-item label="任务开始">
+              <el-button type="success" bg text>开始</el-button>
+            </el-form-item>
+          </el-form>
         </el-col>
       </el-row>
     </div>
@@ -116,19 +116,21 @@ import {GET_TODO} from "@/constant/channel";
 const colors = ['#fc5c65', '#33d9b2', '#ff793f']
 
 const progressColors = [
-  { color: '#f56c6c', percentage: 20 },
-  { color: '#e6a23c', percentage: 40 },
-  { color: '#5cb87a', percentage: 60 },
-  { color: '#1989fa', percentage: 80 },
-  { color: '#6f7ad3', percentage: 100 },
+  {color: '#f56c6c', percentage: 20},
+  {color: '#e6a23c', percentage: 40},
+  {color: '#5cb87a', percentage: 60},
+  {color: '#1989fa', percentage: 80},
+  {color: '#6f7ad3', percentage: 100},
 ]
 
 const todoList = ref<{ total: number, complete: number, data?: Todo[] }>({total: 1, complete: 0})
+
 type TimeSelect = {
   isStart: boolean,
   selectVal?: string,
   timeValue?: number,
 }
+
 const timeSelect = ref<TimeSelect>({
   isStart: false,
 });
@@ -181,13 +183,21 @@ onMounted(async () => {
   }
 
   .todo-right {
+    display: flex;
     border-left: 1px dashed var(--el-menu-border-color);
     padding: 0 10px;
     flex: 1;
-
+    flex-direction: column;
     .el-col {
       display: flex;
       justify-content: center;
+    }
+
+    .insert-box {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      flex: 1;
     }
 
     .todo-time-box {
@@ -212,10 +222,7 @@ onMounted(async () => {
         }
       }
     }
-
-
   }
-
 }
 
 </style>

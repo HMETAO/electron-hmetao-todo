@@ -1,6 +1,7 @@
 import {BrowserWindow, IpcMainInvokeEvent} from "electron";
 import {TODO_STORE} from "../constants/store";
 import type Store from "electron-store";
+import {Temporal} from "@js-temporal/polyfill";
 
 
 export function getTodoList(win: BrowserWindow, store: Store) {
@@ -26,14 +27,21 @@ export function getTodoList(win: BrowserWindow, store: Store) {
             date: new Date().toLocaleDateString()
         }]) as any
         let total = 0, complete = 0;
+
         res.forEach(item => {
+            let date = Temporal.Now.plainDateISO().toString()
             item.list.forEach(i => {
                 if (i.isComplete) {
                     complete++;
                 }
                 total++;
+                date = Temporal.PlainDate.from(i.endTime).toString()
             })
+            item.date = date
         })
-        return {total, complete, data:res};
+        res.sort((a, b) => {
+            return Temporal.PlainDate.compare(b.date, a.date)
+        })
+        return {total, complete, data: res};
     }
 }
