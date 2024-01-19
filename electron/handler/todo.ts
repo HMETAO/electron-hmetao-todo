@@ -2,6 +2,7 @@ import {BrowserWindow, IpcMainInvokeEvent} from "electron";
 import {TODO_STORE} from "../constants/store";
 import type Store from "electron-store";
 import {Temporal} from "@js-temporal/polyfill";
+import moment from "moment";
 
 export type Todo = {
     date: string,
@@ -24,7 +25,7 @@ export function getTodoList(win: BrowserWindow, store: Store) {
             let date = null
             let check = false
             item.list.forEach(i => {
-                let dateTime = Temporal.PlainDateTime.from(i.endTime);
+                let dateTime = Temporal.PlainDateTime.from(i.endTime)
                 if (!check) {
                     check = true;
                     date = dateTime.toPlainDate().toString()
@@ -33,7 +34,6 @@ export function getTodoList(win: BrowserWindow, store: Store) {
                     complete++;
                 }
                 total++;
-                i.endTime = dateTime.toLocaleString()
             })
             item.date = date
         })
@@ -50,12 +50,15 @@ export function insertTodo(win: BrowserWindow, store: Store) {
         let todo = JSON.parse(data) as TodoType
 
         if (!todo.endTime) {
-            todo.endTime = Temporal.Now.plainDateTimeISO().toString({smallestUnit: 'minute', calendarName: 'never'})
+            todo.endTime = moment(Temporal.Now.plainDateTimeISO().toString({
+                smallestUnit: 'minute',
+                calendarName: 'never'
+            })).format("YYYY-MM-DD hh:mm:ss")
         } else {
-            todo.endTime = Temporal.Instant.from(todo.endTime).toZonedDateTime({
+            todo.endTime = moment(Temporal.Instant.from(todo.endTime).toZonedDateTime({
                 timeZone: "Asia/Shanghai",
                 calendar: Temporal.Calendar.from("iso8601")
-            }).toPlainDateTime().toString()
+            }).toPlainDateTime().toString()).format("YYYY-MM-DD hh:mm:ss")
         }
 
         let res = store.get(TODO_STORE, []) as Todo[]
@@ -76,5 +79,13 @@ export function insertTodo(win: BrowserWindow, store: Store) {
             })
         }
         store.set(TODO_STORE, res);
+    }
+}
+
+
+export function updateTodo(win: BrowserWindow, store: Store) {
+    return (event: IpcMainInvokeEvent, data: string) => {
+        let todo = JSON.parse(data) as Todo[]
+        store.set(TODO_STORE, todo);
     }
 }

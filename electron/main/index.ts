@@ -3,9 +3,9 @@ import {buildSystemTrayMenu} from '../components/menus'
 import {release} from 'node:os'
 import {join, dirname} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {GET_TODO, INSERT_TODO, NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channel";
-import {NavigationClose, NavigationMinimize} from "../handler/navigation";
-import {getTodoList, insertTodo} from "../handler/todo";
+import {GET_TODO, INSERT_TODO, NAVIGATION_CLOSE, NAVIGATION_MINIMIZE, UPDATE_TODO} from "../constants/channel";
+import {navigationClose, navigationMinimize} from "../handler/navigation";
+import {getTodoList, insertTodo, updateTodo} from "../handler/todo";
 
 import Store from "electron-store";
 
@@ -65,13 +65,15 @@ const createWindowPostProcess = (win: BrowserWindow) => {
     tray = new Tray(icon)
     tray.setContextMenu(buildSystemTrayMenu(win))
     // 点击导航栏关闭
-    ipcMain.handle(NAVIGATION_CLOSE, NavigationClose(win))
+    ipcMain.handle(NAVIGATION_CLOSE, navigationClose(win))
     // 点击最小化
-    ipcMain.handle(NAVIGATION_MINIMIZE, NavigationMinimize(win))
+    ipcMain.handle(NAVIGATION_MINIMIZE, navigationMinimize(win))
     // 获取todo列表
     ipcMain.handle(GET_TODO, getTodoList(win, store))
     // 新增todo
     ipcMain.handle(INSERT_TODO, insertTodo(win, store))
+    // 更新todo
+    ipcMain.handle(UPDATE_TODO, updateTodo(win, store))
 }
 
 async function createWindow() {

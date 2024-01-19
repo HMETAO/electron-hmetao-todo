@@ -19,7 +19,7 @@
           </el-table-column>
           <el-table-column width="40" prop="isComplete" align="center">
             <template #default="{ row }">
-              <el-checkbox v-model="row.isComplete"></el-checkbox>
+              <el-checkbox v-model="row.isComplete" @change="todoChangeEventFunction"></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column prop="title" align="center">
@@ -120,10 +120,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import {Todo, TodoType} from "@/type/todo";
 import {Temporal} from "@js-temporal/polyfill";
-import {GET_TODO, INSERT_TODO} from "@/constant/channel";
+import {GET_TODO, INSERT_TODO, UPDATE_TODO} from "@/constant/channel";
 
 const colors = ['#fc5c65', '#ff793f', '#33d9b2']
 
@@ -157,9 +157,17 @@ const todoForm = ref<TodoType>({
   description: '测试',
   isComplete: false
 })
+// checkbox切换事件回调
+const todoChangeEventFunction = (val: boolean) => {
+  if (val) {
+    todoList.value.complete++
+  } else {
+    todoList.value.complete--
+  }
+}
 const progressComputed = computed<Number>(() => {
   if (todoList.value.total === 0) return 100
-  return (todoList.value.complete) / (todoList.value.total) * 100;
+  return Math.floor((todoList.value.complete) / (todoList.value.total) * 100);
 })
 
 // 点击确定时间事件回调
@@ -179,6 +187,7 @@ const finishEventFunction = () => {
 const endEarlyClickEventFunction = () => {
   timeSelect.value.isStart = false
 }
+// 点击插入todo回调
 const insertClickEventFunction = async () => {
   await window.ipcRenderer.invoke(INSERT_TODO, JSON.stringify(todoForm.value))
   await getTodoList()
@@ -187,10 +196,14 @@ const insertClickEventFunction = async () => {
 onMounted(async () => {
   await getTodoList()
 })
+
 const getTodoList = async () => {
   todoList.value = await window.ipcRenderer.invoke(GET_TODO)
 }
 
+onUnmounted(() => {
+  window.ipcRenderer.invoke(UPDATE_TODO, JSON.stringify(todoList.value.data))
+})
 
 </script>
 <style scoped lang="less">
