@@ -3,9 +3,9 @@ import {buildSystemTrayMenu} from '../components/menus'
 import {release} from 'node:os'
 import {join, dirname} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {GET_TODO, NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channel";
+import {GET_TODO, INSERT_TODO, NAVIGATION_CLOSE, NAVIGATION_MINIMIZE} from "../constants/channel";
 import {NavigationClose, NavigationMinimize} from "../handler/navigation";
-import {getTodoList} from "../handler/todo";
+import {getTodoList, insertTodo} from "../handler/todo";
 
 import Store from "electron-store";
 
@@ -70,6 +70,8 @@ const createWindowPostProcess = (win: BrowserWindow) => {
     ipcMain.handle(NAVIGATION_MINIMIZE, NavigationMinimize(win))
     // 获取todo列表
     ipcMain.handle(GET_TODO, getTodoList(win, store))
+    // 新增todo
+    ipcMain.handle(INSERT_TODO, insertTodo(win, store))
 }
 
 async function createWindow() {

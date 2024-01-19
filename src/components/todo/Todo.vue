@@ -24,14 +24,14 @@
           </el-table-column>
           <el-table-column prop="title" align="center">
             <template #default="{ row }">
-              <el-text :style="{color:colors[row.id % 3],'font-weight':500}" :tag="row.isComplete? 'del':'span'">
+              <el-text :style="{color:colors[row.level % 3],'font-weight':500}" :tag="row.isComplete? 'del':'span'">
                 {{ row.title }}
               </el-text>
             </template>
           </el-table-column>
           <el-table-column prop="endTime" align="center">
             <template #default="{ row }">
-              <el-text :style="{color:colors[row.id % 3],'font-weight':500}">{{ row.endTime }}</el-text>
+              <el-text :style="{color:colors[row.level % 3],'font-weight':500}">{{ row.endTime }}</el-text>
             </template>
           </el-table-column>
         </el-table>
@@ -80,26 +80,38 @@
       </el-row>
       <el-row style="flex: 1;">
         <el-col :span="24" class="insert-box">
-          <el-form>
-            <el-form-item label="任务名称">
-              <el-input placeholder="请输入任务名称"></el-input>
+          <el-form :model="todoForm">
+            <el-form-item label="事件名称">
+              <el-input placeholder="请输入任务名称" v-model="todoForm.title"></el-input>
             </el-form-item>
-            <el-form-item label="任务描述">
-              <el-input type="textarea" placeholder="请输入任务描述"></el-input>
+            <el-form-item label="事件描述">
+              <el-input type="textarea" v-model="todoForm.description" placeholder="请输入任务描述"></el-input>
             </el-form-item>
-            <el-form-item label="任务时间">
-              <el-time-picker
-                  v-model="timeSelect.selectVal"
-                  placeholder="选择时间"
-                  :start='Temporal.Now.plainTimeISO().toString({smallestUnit: "minute"})'
-                  :end="timeSelect.selectVal"
-                  :disabled="timeSelect.isStart"
-                  :editable="false"
+            <el-form-item label="事件结束时间">
+              <el-date-picker
+                  v-model="todoForm.endTime"
+                  type="datetime"
+                  placeholder="Pick a Date"
+                  format="YYYY-MM-DD HH:mm:ss"
+              />
+            </el-form-item>
+            <el-form-item label="事件等级">
+              <el-select
+                  v-model="todoForm.level"
+                  clearable
+                  placeholder="Select"
+                  style="width: 240px"
               >
-              </el-time-picker>
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label="任务开始">
-              <el-button type="success" bg text>开始</el-button>
+              <el-button type="success" bg text @click="insertClickEventFunction">开始</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -109,11 +121,11 @@
 </template>
 <script setup lang="ts">
 import {computed, onMounted, ref} from "vue";
-import {Todo} from "@/type/todo";
+import {Todo, TodoType} from "@/type/todo";
 import {Temporal} from "@js-temporal/polyfill";
-import {GET_TODO} from "@/constant/channel";
+import {GET_TODO, INSERT_TODO} from "@/constant/channel";
 
-const colors = ['#fc5c65', '#33d9b2', '#ff793f']
+const colors = ['#fc5c65', '#ff793f', '#33d9b2']
 
 const progressColors = [
   {color: '#f56c6c', percentage: 20},
@@ -121,6 +133,11 @@ const progressColors = [
   {color: '#5cb87a', percentage: 60},
   {color: '#1989fa', percentage: 80},
   {color: '#6f7ad3', percentage: 100},
+]
+const options = [
+  {label: '难', value: 0},
+  {label: '中', value: 1},
+  {label: '易', value: 2},
 ]
 
 const todoList = ref<{ total: number, complete: number, data?: Todo[] }>({total: 1, complete: 0})
@@ -134,8 +151,14 @@ type TimeSelect = {
 const timeSelect = ref<TimeSelect>({
   isStart: false,
 });
-
-const progressComputed = computed(() => {
+const todoForm = ref<TodoType>({
+  level: 2,
+  title: '测试',
+  description: '测试',
+  isComplete: false
+})
+const progressComputed = computed<Number>(() => {
+  if (todoList.value.total === 0) return 100
   return (todoList.value.complete) / (todoList.value.total) * 100;
 })
 
@@ -156,10 +179,18 @@ const finishEventFunction = () => {
 const endEarlyClickEventFunction = () => {
   timeSelect.value.isStart = false
 }
+const insertClickEventFunction = async () => {
+  await window.ipcRenderer.invoke(INSERT_TODO, JSON.stringify(todoForm.value))
+  await getTodoList()
+}
 
 onMounted(async () => {
-  todoList.value = await window.ipcRenderer.invoke(GET_TODO)
+  await getTodoList()
 })
+const getTodoList = async () => {
+  todoList.value = await window.ipcRenderer.invoke(GET_TODO)
+}
+
 
 </script>
 <style scoped lang="less">
@@ -188,6 +219,7 @@ onMounted(async () => {
     padding: 0 10px;
     flex: 1;
     flex-direction: column;
+
     .el-col {
       display: flex;
       justify-content: center;
