@@ -21,13 +21,19 @@ export function getTodoList(win: BrowserWindow, store: Store) {
         let total = 0, complete = 0;
 
         res.forEach(item => {
-            let date = Temporal.Now.plainDateISO().toString()
+            let date = null
+            let check = false
             item.list.forEach(i => {
+                let dateTime = Temporal.PlainDateTime.from(i.endTime);
+                if (!check) {
+                    check = true;
+                    date = dateTime.toPlainDate().toString()
+                }
                 if (i.isComplete) {
                     complete++;
                 }
                 total++;
-                date = Temporal.PlainDate.from(i.endTime).toString()
+                i.endTime = dateTime.toLocaleString()
             })
             item.date = date
         })
