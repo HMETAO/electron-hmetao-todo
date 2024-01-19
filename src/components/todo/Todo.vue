@@ -192,9 +192,14 @@ const insertClickEventFunction = async () => {
   await window.ipcRenderer.invoke(INSERT_TODO, JSON.stringify(todoForm.value))
   await getTodoList()
 }
-
+let saveTime: any = null
 onMounted(async () => {
   await getTodoList()
+  saveTime = setInterval(() => {
+    if (todoList.value.data) {
+      window.ipcRenderer.invoke(UPDATE_TODO, JSON.stringify(todoList.value.data))
+    }
+  }, 3000)
 })
 
 const getTodoList = async () => {
@@ -202,7 +207,9 @@ const getTodoList = async () => {
 }
 
 onUnmounted(() => {
-  window.ipcRenderer.invoke(UPDATE_TODO, JSON.stringify(todoList.value.data))
+  if (todoList.value.data)
+    window.ipcRenderer.invoke(UPDATE_TODO, JSON.stringify(todoList.value.data))
+  if (saveTime != null) clearInterval(saveTime)
 })
 
 </script>
